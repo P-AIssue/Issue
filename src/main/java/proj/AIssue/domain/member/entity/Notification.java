@@ -2,15 +2,15 @@ package proj.AIssue.domain.member.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import proj.AIssue.global.common.BaseTimeEntity;
 
-import java.time.LocalDateTime;
 
 @Entity
 @Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Notification {
+public class Notification extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,6 +23,4 @@ public class Notification {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String message;  // 알림 내용
 
-    @Column(nullable = false)
-    private LocalDateTime sentAt;  // 알림 전송 시각
 }

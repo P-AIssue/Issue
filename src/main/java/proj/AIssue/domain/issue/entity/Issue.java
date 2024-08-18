@@ -2,6 +2,7 @@ package proj.AIssue.domain.issue.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import proj.AIssue.global.common.BaseTimeEntity;
 
 import java.time.LocalDateTime;
 
@@ -10,7 +11,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
-public class Issue {
+public class Issue extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,12 +22,6 @@ public class Issue {
 
     @Column(nullable = false, columnDefinition = "TEXT")
     private String description;
-
-    @Column(nullable = false)
-    private LocalDateTime createdAt;  // 이슈 생성 시각
-
-    @Column(nullable = false)
-    private LocalDateTime updatedAt;  // 이슈 수정 시각
 
     @Column(nullable = false, length = 512)
     private String sourceUrl;  // 이슈 출처 URL

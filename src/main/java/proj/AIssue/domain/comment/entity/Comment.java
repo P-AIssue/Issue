@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import proj.AIssue.domain.issue.entity.Issue;
 import proj.AIssue.domain.member.entity.Member;
+import proj.AIssue.global.common.BaseTimeEntity;
 
 import java.time.LocalDateTime;
 
@@ -12,7 +13,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-public class Comment {
+public class Comment extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,7 +30,6 @@ public class Comment {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
 
-    @Column(nullable = false)
-    private LocalDateTime createdAt;  // 댓글 작성 시각
+
 
 }

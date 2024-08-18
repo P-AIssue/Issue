@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import proj.AIssue.domain.issue.entity.Issue;
 import proj.AIssue.domain.member.entity.Member;
+import proj.AIssue.global.common.BaseTimeEntity;
 
 import java.time.LocalDateTime;
 
@@ -13,7 +14,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
-public class Feedback {
+public class Feedback extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,6 +31,4 @@ public class Feedback {
     @Enumerated(EnumType.STRING)
     private FeedbackType feedbackType;  // 피드백 유형
 
-    @Column(nullable = false)
-    private LocalDateTime createdAt;  // 피드백 생성 시각
 }
