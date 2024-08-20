@@ -52,9 +52,6 @@ jobs:
     needs: build
 
     steps:
-      - name: Change Workdir
-        run: cd Projects
-
       - name: Delete Docker Compose
         run: rm -f docker-compose.yml
 
