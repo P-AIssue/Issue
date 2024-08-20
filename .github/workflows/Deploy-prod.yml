@@ -2,20 +2,19 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: [master]
+    branches:
+      - master
   pull_request:
-    branches: [master]
+    branches:
+      - master
 
 jobs:
-  Continuous-Integration:
+  build:
     runs-on: ubuntu-latest
 
     steps:
       - name: Check out the code
         uses: actions/checkout@v3
-        with:
-          token: ${{ secrets.TOKEN }}
-          submodules: true
 
       - name: Set up JDK 17
         uses: actions/setup-java@v3
@@ -23,22 +22,21 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      # Gradle Package Caching
-      - name: Caching Gradle packages
+      - name: Cache Gradle packages
         uses: actions/cache@v3
         with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
+          path: ~/.gradle/caches
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
 
-      - name: Grant execute permission for gradlew
-        run: chmod +x ./gradlew
+      - name: Set YML
+        run: |
+          mkdir -p src/main/resources
+          echo "${{ secrets.APPLICATION_YML }}" | base64 --decode > src/main/resources/application.yml
 
       - name: Build with Gradle
-        run: ./gradlew clean build -i --no-daemon
-        env:
-          SPRING_PROFILES_ACTIVE: prod
+        run: ./gradlew clean build
 
       - name: Build Docker image
         run: docker build -t ${{ secrets.DOCKER_USERNAME }}/aissue:latest .
@@ -49,20 +47,17 @@ jobs:
       - name: Push Docker image
         run: docker push ${{ secrets.DOCKER_USERNAME }}/aissue:latest
 
-  Continuous-Deployment:
-    needs: Continuous-Integration
+  deploy:
     runs-on: self-hosted
+    needs: build
 
     steps:
-      - name: Docker Image Pull
-        run: docker pull ${{ secrets.DOCKER_USERNAME }}/aissue:latest
+      - name: Delete Docker Compose
+        run: rm -f docker-compose.yml
 
-      #      - name: Delete Docker Compose
-      #        run: rm -f docker-compose.yml
-
-      #      - name: Set Docker Compose
-      #        run: |
-      #          echo "${{ secrets.DOCKER_COMPOSE_YML }}" | base64 --decode > docker-compose.yml
+      - name: Set Docker Compose
+        run: |
+          echo "${{ secrets.DOCKER_COMPOSE_YML }}" | base64 --decode > docker-compose.yml
 
       - name: Docker Compose Stop
         run: docker-compose down
