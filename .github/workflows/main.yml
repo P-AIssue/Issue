@@ -34,6 +34,8 @@ jobs:
         run: |
           mkdir -p src/main/resources
           echo "${{ secrets.APPLICATION_YML }}" | base64 --decode > src/main/resources/application.yml
+          echo "${{ secrets.APPLICATION_DEV_YML }}" | base64 --decode > src/main/resources/application-dev.yml
+          echo "${{ secrets.APPLICATION_PROD_YML }}" | base64 --decode > src/main/resources/application-prod.yml
 
       - name: Build with Gradle
         run: ./gradlew clean build
@@ -52,9 +54,6 @@ jobs:
     needs: build
 
     steps:
-      - name: Change Workdir
-        run: cd Projects
-
       - name: Delete Docker Compose
         run: rm -f docker-compose.yml
 
