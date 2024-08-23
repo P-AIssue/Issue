@@ -24,9 +24,8 @@ public class Member {
     @Column(nullable = false)
     private String password;
 
-//    private String oauthProvider;  // OAuth2 제공자
-//
-//    private String oauthId;  // OAuth2 제공자에 따른 사용자 ID
+    @Enumerated(EnumType.STRING)
+    private Authority authority;
 
 //    private List<Long> likedIssues;  사용자가 좋아요를 누른 이슈들 (Issue ID 목록)
 
