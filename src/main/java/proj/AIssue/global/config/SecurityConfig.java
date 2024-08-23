@@ -50,8 +50,10 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
                 // 권한 url 설정
-                .authorizeHttpRequests(req -> req.
-                        anyRequest().permitAll())
+                .authorizeHttpRequests(req -> req
+                        .requestMatchers("/swagger-ui/**").permitAll()
+                        .requestMatchers("/v3/api-docs/**").permitAll()
+                        .anyRequest().permitAll())
 
                 // logout 설정
                 .logout(logout -> logout.
