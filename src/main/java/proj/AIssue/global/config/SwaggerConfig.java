@@ -12,9 +12,9 @@ public class SwaggerConfig {
     public OpenAPI OpenAPI() {
         return new OpenAPI()
                 .info(new Info()
-                        .version("v1.0.0")               // 버전 기록
-                        .title("P프 API")                // API 명세서 제목
-                        .description("P프 API 명세서"));   // 상세
+                        .version("v1.0.0")                     // 버전 기록
+                        .title("P-project API")                // API 명세서 제목
+                        .description("P-project API Specification"));   // 상세
 
     }
 }

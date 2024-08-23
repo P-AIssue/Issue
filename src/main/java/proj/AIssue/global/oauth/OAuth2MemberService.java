@@ -7,8 +7,10 @@ import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
+import proj.AIssue.domain.member.entity.Member;
 import proj.AIssue.domain.member.repository.MemberRepository;
 import proj.AIssue.global.oauth.dto.GoogleResponse;
+import proj.AIssue.global.oauth.dto.KakaoResponse;
 import proj.AIssue.global.oauth.dto.NaverResponse;
 import proj.AIssue.global.oauth.dto.OAuth2Response;
 
@@ -30,9 +32,9 @@ public class OAuth2MemberService extends DefaultOAuth2UserService {
                 .orElseThrow(() -> new OAuth2AuthenticationException(
                         "Unsupported provider: " + userRequest.getClientRegistration().getRegistrationId()));
 
-        // 해당 Response로 Member 객체 찾아와서 accessToken 생성
+        Member member = getOrSave(oAuth2Response);
 
-        return new OAuth2Member(oAuth2Response);
+        return OAuth2Member.from(member);
     }
 
     private Optional<OAuth2Response> getOAuth2Response(OAuth2UserRequest userRequest, OAuth2User oAuth2User) {
@@ -45,9 +47,16 @@ public class OAuth2MemberService extends DefaultOAuth2UserService {
         } else if ("google".equals(registrationId)) {
             oAuth2Response = new GoogleResponse(oAuth2User.getAttributes());
         } else {
-            oAuth2Response = null;
+            oAuth2Response = new KakaoResponse(oAuth2User.getAttributes());
         }
 
-        return Optional.ofNullable(oAuth2Response);
+        return Optional.of(oAuth2Response);
+    }
+
+    private Member getOrSave(OAuth2Response oAuth2Response) {
+        Member member = memberRepository.findByEmail(oAuth2Response.getEmail())
+                .orElseGet(oAuth2Response::toEntity);
+
+        return memberRepository.save(member);
     }
 }

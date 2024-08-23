@@ -1,5 +1,7 @@
 package proj.AIssue.global.oauth.dto;
 
+import proj.AIssue.domain.member.entity.Member;
+
 public interface OAuth2Response {
 
     // 제공자 (naver, google, kakao 등)
@@ -11,4 +13,6 @@ public interface OAuth2Response {
     // 사용자 정보
     String getEmail();
     String getName();
+
+    Member toEntity();
 }

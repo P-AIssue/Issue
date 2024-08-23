@@ -1,6 +1,5 @@
 package proj.AIssue.global.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,8 +13,8 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import proj.AIssue.domain.member.repository.MemberRepository;
-import proj.AIssue.global.oauth.JwtUtils;
+import proj.AIssue.global.oauth.OAuth2MemberService;
+import proj.AIssue.global.oauth.OAuth2SuccessHandler;
 
 @Configuration
 @EnableWebSecurity
@@ -23,9 +22,8 @@ import proj.AIssue.global.oauth.JwtUtils;
 @EnableMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true)
 public class SecurityConfig {
 
-    private final MemberRepository memberRepository;
-    private final ObjectMapper objectMapper;
-    private final JwtUtils jwtUtils;
+    private final OAuth2MemberService oAuth2MemberService;
+    private final OAuth2SuccessHandler oAuth2SuccessHandler;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -55,11 +53,19 @@ public class SecurityConfig {
                         .requestMatchers("/v3/api-docs/**").permitAll()
                         .anyRequest().permitAll())
 
+                // oauth2Login 설정
+                .oauth2Login((auth2) -> auth2
+                        .loginPage("/login") // OAuth2 로그인 시도 시 커스텀 로그인 페이지 경로 설정
+                        .userInfoEndpoint((userInfoEndpointConfig) ->
+                                userInfoEndpointConfig.userService(oAuth2MemberService))
+                        .successHandler(oAuth2SuccessHandler))
+
                 // logout 설정
-                .logout(logout -> logout.
-                        logoutUrl("/member/logout").
-                        logoutSuccessUrl("/").
-                        invalidateHttpSession(true))
+                .logout(logout -> logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/")
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID"))
 
                 .build();
     }
