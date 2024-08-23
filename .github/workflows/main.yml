@@ -34,7 +34,7 @@ jobs:
         run: |
           mkdir -p src/main/resources
           echo "${{ secrets.APPLICATION_YML }}" | base64 --decode > src/main/resources/application.yml
-          echo "${{ secrets.APPLICATION_DEV_YML }}" | base64 --decode > src/main/resources/application-dev.yml
+          echo "${{ secrets.APPLICATION_JWT_YML }}" | base64 --decode > src/main/resources/application-jwt.yml
           echo "${{ secrets.APPLICATION_PROD_YML }}" | base64 --decode > src/main/resources/application-prod.yml
 
       - name: Build with Gradle
