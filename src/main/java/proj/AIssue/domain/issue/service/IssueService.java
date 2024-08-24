@@ -34,6 +34,9 @@ public class IssueService {
 
     private final ObjectMapper objectMapper;
 
+    /**
+     * 네이버API를 사용해서 뉴스 기사를 검색
+     */
     public List<IssueDTO> searchNews(String query) {
         String urlStr = apiUrl + "?query=" + URLEncoder.encode(query, StandardCharsets.UTF_8);
 
@@ -43,11 +46,11 @@ public class IssueService {
 
         try {
             URL url = new URL(urlStr);
-            urlConnection = (HttpURLConnection) url.openConnection();
+            urlConnection = (HttpURLConnection) url.openConnection(); //네이버 API에 HTTP요청
             urlConnection.setRequestMethod("GET");
-            urlConnection.setRequestProperty("X-Naver-Client-Id", clientId);
+            urlConnection.setRequestProperty("X-Naver-Client-Id", clientId); //요청헤더에 ID,Secret
             urlConnection.setRequestProperty("X-Naver-Client-Secret", clientSecret);
-            urlConnection.setConnectTimeout(3000);
+            urlConnection.setConnectTimeout(3000); //연결 및 읽기 시간 3초
             urlConnection.setReadTimeout(3000);
 
             if (urlConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
@@ -66,8 +69,8 @@ public class IssueService {
         // JSON 응답을 IssueDTO 리스트로 변환
         List<IssueDTO> issueDTOs = new ArrayList<>();
         try {
-            JsonNode root = objectMapper.readTree(result);
-            JsonNode items = root.path("items");
+            JsonNode root = objectMapper.readTree(result); //JSON파싱 -> 트리구조로 변환
+            JsonNode items = root.path("items"); // JSON 데이터에서 값을 가져옴 -> 뉴스 기사 목록
 
             for (JsonNode item : items) {
                 String title = item.path("title").asText();
@@ -95,4 +98,3 @@ public class IssueService {
         return result.toString();
     }
 }
-
