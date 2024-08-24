@@ -6,8 +6,6 @@ import proj.AIssue.domain.issue.entity.Issue;
 import proj.AIssue.domain.member.entity.Member;
 import proj.AIssue.global.common.BaseTimeEntity;
 
-import java.time.LocalDateTime;
-
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

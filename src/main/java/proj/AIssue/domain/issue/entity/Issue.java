@@ -4,8 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 import proj.AIssue.global.common.BaseTimeEntity;
 
-import java.time.LocalDateTime;
-
 @Entity
 @Getter
 @AllArgsConstructor
