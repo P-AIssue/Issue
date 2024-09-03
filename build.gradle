@@ -56,8 +56,12 @@ tasks.named("jar") {
 
 tasks.register('copyExternalProperties', Copy) {
 	from "./Issue-config"
-	include "*.yml"
+	include "application-*.yml"
 	into "src/main/resources"
+
+	from "./Issue-config"
+	include "docker-compose.yml"
+	into "./"
 }
 
 processResources.dependsOn('copyExternalProperties')
