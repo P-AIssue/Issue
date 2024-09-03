@@ -2,14 +2,12 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches:
-      - master
+    branches: [dev]
   pull_request:
-    branches:
-      - master
+    branches: [dev]
 
 jobs:
-  build:
+  Continuous-Integration:
     runs-on: ubuntu-latest
 
     steps:
@@ -30,15 +28,12 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
-      - name: Set YML
-        run: |
-          mkdir -p src/main/resources
-          echo "${{ secrets.APPLICATION_YML }}" | base64 --decode > src/main/resources/application.yml
-          echo "${{ secrets.APPLICATION_JWT_YML }}" | base64 --decode > src/main/resources/application-jwt.yml
-          echo "${{ secrets.APPLICATION_PROD_YML }}" | base64 --decode > src/main/resources/application-prod.yml
+      - name: Grant execute permission for gradlew
+        run: chmod +x ./gradlew
 
+      # dev branch인 경우 dev profile로 빌드
       - name: Build with Gradle
-        run: ./gradlew clean build
+        run: ./gradlew clean build -i --no-daemon -Dspring.profiles.active=dev
 
       - name: Build Docker image
         run: docker build -t ${{ secrets.DOCKER_USERNAME }}/aissue:latest .
@@ -49,17 +44,21 @@ jobs:
       - name: Push Docker image
         run: docker push ${{ secrets.DOCKER_USERNAME }}/aissue:latest
 
-  deploy:
+  Continuous-Deployment:
+    if: github.name == 'push'
+    needs: Continuous-Integration
     runs-on: self-hosted
-    needs: build
 
     steps:
-      - name: Delete Docker Compose
-        run: rm -f docker-compose.yml
+      - name: Docker Image Pull
+        run: docker pull ${{ secrets.DOCKER_USERNAME }}/aissue:latest
 
-      - name: Set Docker Compose
-        run: |
-          echo "${{ secrets.DOCKER_COMPOSE_YML }}" | base64 --decode > docker-compose.yml
+#      - name: Delete Docker Compose
+#        run: rm -f docker-compose.yml
+
+#      - name: Set Docker Compose
+#        run: |
+#          echo "${{ secrets.DOCKER_COMPOSE_YML }}" | base64 --decode > docker-compose.yml
 
       - name: Docker Compose Stop
         run: docker-compose down
