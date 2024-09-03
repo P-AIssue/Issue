@@ -58,7 +58,9 @@ tasks.register('copyExternalProperties', Copy) {
 	from "./Issue-config"
 	include "application-*.yml"
 	into "src/main/resources"
+}
 
+tasks.register('processResources', Copy) {
 	from "./Issue-config"
 	include "docker-compose.yml"
 	into "./"

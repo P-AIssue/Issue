@@ -34,7 +34,9 @@ jobs:
 
       # dev branch인 경우 dev profile로 빌드
       - name: Build with Gradle
-        run: ./gradlew clean build -i --no-daemon -Dspring.profiles.active=dev
+        run: ./gradlew clean build -i --no-daemon
+        env:
+          SPRING_PROFILES_ACTIVE: dev
 
       - name: Build Docker image
         run: docker build -t ${{ secrets.DOCKER_USERNAME }}/aissue:latest .
