@@ -65,6 +65,3 @@ tasks.register('copyExternalProperties', Copy) {
 	}
 	into "./"
 }
-
-processResources.dependsOn('copyExternalProperties')
-processTestResources.dependsOn('copyExternalProperties')
