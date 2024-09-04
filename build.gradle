@@ -54,14 +54,25 @@ tasks.named("jar") {
 	enabled = false
 }
 
-tasks.register('copyExternalProperties', Copy) {
-	from ("./Issue-config") {
-		include "application-*.yml"
+tasks.register('copyPrivate', Copy) {
+	copy {
+		from("./Issue-config") {
+			include "application-*.yml"
+		}
+		into "src/main/resources"
 	}
-	into "src/main/resources"
 
-	from("./Issue-config") {
-		include "docker-compose.yml"
+	copy {
+		from("./Issue-config") {
+			include "docker-compose.yml"
+		}
+		into "./"
 	}
-	into "./"
 }
+
+tasks.named('compileJava') {
+	dependsOn(copyPrivate)
+}
+
+processResources.dependsOn('copyPrivate')
+processTestResources.dependsOn('copyPrivate')
