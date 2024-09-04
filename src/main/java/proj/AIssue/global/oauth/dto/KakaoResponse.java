@@ -8,30 +8,35 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class KakaoResponse implements OAuth2Response {
 
-    private final Map<String, Object> attribute;
+    private final Map<String, Object> attributes;
 
     @Override
     public String getProvider() {
-        return "";
+        return "Kakao";
     }
 
     @Override
     public String getProviderId() {
-        return "";
+        return attributes.get("id").toString();
     }
 
     @Override
     public String getEmail() {
-        return "";
+        return (String) ((Map<?, ?>) attributes.get("kakao_account")).get("email");
     }
 
     @Override
     public String getName() {
-        return "";
+        return (String) ((Map<?, ?>) attributes.get("properties")).get("nickname");
     }
 
     @Override
     public Member toEntity() {
-        return null;
+        return Member.builder()
+                .provider(getProvider())
+                .providerId(getProviderId())
+                .email(getEmail())
+                .username(getName())
+                .build();
     }
 }

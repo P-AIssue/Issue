@@ -21,9 +21,6 @@ public class Member {
     @Column(nullable = false, unique = true)
     private String email;
 
-    @Column(nullable = false)
-    private String password;
-
     @Enumerated(EnumType.STRING)
     private Authority authority;
 
@@ -31,9 +28,4 @@ public class Member {
     private String providerId;
 
 //    private List<Long> likedIssues;  사용자가 좋아요를 누른 이슈들 (Issue ID 목록)
-
-
-
-
-
 }

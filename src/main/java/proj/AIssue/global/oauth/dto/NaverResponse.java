@@ -12,22 +12,22 @@ public class NaverResponse implements OAuth2Response {
 
     @Override
     public String getProvider() {
-        return "naver";
+        return "Naver";
     }
 
     @Override
     public String getProviderId() {
-        return attribute.get("id").toString();
+        return (String) ((Map<?, ?>) attribute.get("response")).get("id");
     }
 
     @Override
     public String getEmail() {
-        return attribute.get("email").toString();
+        return (String) ((Map<?, ?>) attribute.get("response")).get("email");
     }
 
     @Override
     public String getName() {
-        return attribute.get("name").toString();
+        return (String) ((Map<?, ?>) attribute.get("response")).get("name");
     }
 
     @Override
