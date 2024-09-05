@@ -40,14 +40,16 @@ public class OAuth2MemberService extends DefaultOAuth2UserService {
     private Optional<OAuth2Response> getOAuth2Response(OAuth2UserRequest userRequest, OAuth2User oAuth2User) {
 
         String registrationId = userRequest.getClientRegistration().getRegistrationId();
-        OAuth2Response oAuth2Response;
 
-        if ("naver".equals(registrationId)) {
+        OAuth2Response oAuth2Response;
+        if ("Naver".equals(registrationId)) {
             oAuth2Response = new NaverResponse(oAuth2User.getAttributes());
-        } else if ("google".equals(registrationId)) {
+        } else if ("Google".equals(registrationId)) {
             oAuth2Response = new GoogleResponse(oAuth2User.getAttributes());
-        } else {
+        } else if ("Kakao".equals(registrationId)) {
             oAuth2Response = new KakaoResponse(oAuth2User.getAttributes());
+        } else {
+            throw new OAuth2AuthenticationException("Unsupported provider: " + registrationId);
         }
 
         return Optional.of(oAuth2Response);
