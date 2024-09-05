@@ -23,7 +23,7 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         log.info("OAuth2SuccessHandler.onAuthenticationSuccess Member Name : {}", authentication.getName());
 
-        String token = jwtUtils.createAccessToken(authentication.getName());
+        String token = jwtUtils.createAccessToken(Long.valueOf(authentication.getName()));
         response.sendRedirect(URI + "?token=" + token);
     }
 }
