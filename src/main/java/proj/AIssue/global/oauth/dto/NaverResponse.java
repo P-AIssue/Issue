@@ -1,6 +1,7 @@
 package proj.AIssue.global.oauth.dto;
 
 import lombok.RequiredArgsConstructor;
+import proj.AIssue.domain.member.entity.Authority;
 import proj.AIssue.domain.member.entity.Member;
 
 import java.util.Map;
@@ -37,6 +38,7 @@ public class NaverResponse implements OAuth2Response {
                 .providerId(getProviderId())
                 .email(getEmail())
                 .username(getName())
+                .authority(Authority.USER)
                 .build();
     }
 }

@@ -27,5 +27,8 @@ public class Member {
     private String provider;
     private String providerId;
 
+    @Builder.Default
+    private Boolean isDeleted = Boolean.FALSE;
+
 //    private List<Long> likedIssues;  사용자가 좋아요를 누른 이슈들 (Issue ID 목록)
 }

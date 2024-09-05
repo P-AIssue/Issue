@@ -37,16 +37,16 @@ public class JwtUtils {
 
     private static final String ACCESS_TOKEN_SUBJECT = "AccessToken";
     private static final String REFRESH_TOKEN_SUBJECT = "RefreshToken";
-    private static final String EMAIL_CLAIM = "email";
+    private static final String ID_CLAIM = "member_id";
     private static final String BEARER = "Bearer ";
 
     private final MemberRepository memberRepository;
 
-    public String createAccessToken(String email) {
+    public String createAccessToken(Long memberId) {
         return JWT.create()
                 .withSubject(ACCESS_TOKEN_SUBJECT)
                 .withExpiresAt(new Date(System.currentTimeMillis() + accessExpiration))
-                .withClaim(EMAIL_CLAIM, email)
+                .withClaim(ID_CLAIM, memberId)
                 .sign(Algorithm.HMAC512(secret));
     }
 
@@ -84,15 +84,15 @@ public class JwtUtils {
                 .map(refreshToken -> refreshToken.replace(BEARER, ""));
     }
 
-    public Optional<String> extractEmail(HttpServletRequest request) {
+    public Optional<Long> extractMemberId(HttpServletRequest request) {
         String accessToken = extractAccessToken(request)
                 .orElseThrow(() -> new IllegalArgumentException("Access Token is not found"));
 
         return Optional.ofNullable(JWT.require(Algorithm.HMAC512(secret))
                 .build()
                 .verify(accessToken)
-                .getClaim(EMAIL_CLAIM)
-                .asString());
+                .getClaim(ID_CLAIM)
+                .asLong());
     }
 
     /* 토큰 유효성 검증 */
