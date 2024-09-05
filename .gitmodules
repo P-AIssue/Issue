@@ -1,0 +1,3 @@
+[submodule "Issue-config"]
+	path = Issue-config
+	url = https://github.com/P-AIssue/Issue-config.git

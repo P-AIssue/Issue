@@ -1,28 +1,31 @@
 package proj.AIssue.domain.member.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
 @Getter
+@Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@Builder
 public class Member {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(unique = true, nullable = false)
+    private Long memberId;
 
-    // feedbacks
-
+    @Column(nullable = false, unique = true)
     private String username;
 
-    private String password;
-
-    private String nickname;
-
+    @Column(nullable = false, unique = true)
     private String email;
+
+    @Enumerated(EnumType.STRING)
+    private Authority authority;
+
+    private String provider;
+    private String providerId;
+
+//    private List<Long> likedIssues;  사용자가 좋아요를 누른 이슈들 (Issue ID 목록)
 }
