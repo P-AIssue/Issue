@@ -1,0 +1,60 @@
+version: '3.7'
+
+networks:
+  front-network:
+    driver: bridge
+  back-network:
+    driver: bridge
+
+services:
+  nginx:
+    container_name: nginx-proxy
+    image: nginx
+    restart: always
+
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      - front-network
+      - back-network
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+    environment:
+      - TZ=Asia/Seoul
+    depends_on:
+      - backend
+
+  database:
+    container_name: issue-prod
+    image: mariadb
+    restart: always
+
+    ports:
+      - "3306:3306"
+    networks:
+      - back-network
+    volumes:
+      - ./db-data:/var/lib/mysql  # 데이터 저장 경로
+      - ./db-config:/etc/mysql/conf.d  # 설정 파일 경로
+    environment:
+      - "MARIADB_ROOT_PASSWORD=issue-admin"
+      - "TZ=Asia/Seoul"
+    command:
+      # 위 명령어를 사용하지 않으면, 일부 설정이 latin으로 설정됩니다.
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+
+  backend:
+    container_name: issue-backend
+    image: khyu2/aissue
+    restart: on-failure
+
+    ports:
+      - "8080:8080"
+    networks:
+      - front-network
+      - back-network
+    depends_on:
+      - database
+
