@@ -9,7 +9,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import proj.AIssue.domain.member.dto.MemberInfoDTO;
 import proj.AIssue.domain.member.dto.MemberUpdateDTO;
+import proj.AIssue.domain.member.exception.MemberException;
 import proj.AIssue.domain.member.service.MemberService;
+import proj.AIssue.global.exception.ErrorCode;
 import proj.AIssue.global.exception.dto.ResponseVO;
 import proj.AIssue.global.resolver.LoginUser;
 import proj.AIssue.global.resolver.User;
@@ -55,6 +57,9 @@ public class MemberController {
     public ResponseVO getMyInfo(@User LoginUser loginUser) throws Exception {
 
         Long memberId = loginUser.getMemberId();
+        if (memberId == null) {
+            throw new MemberException(ErrorCode.NOT_FOUND_MEMBER);
+        }
         MemberInfoDTO info = memberService.getInfo(memberId);
         return new ResponseVO(info);
     }
