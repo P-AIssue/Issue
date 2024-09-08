@@ -12,8 +12,8 @@ public class Member {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(unique = true, nullable = false)
-    private Long memberId;
+    @Column(name = "member_id", unique = true, nullable = false)
+    private Long id;
 
     @Column(nullable = false, unique = true)
     private String username;
@@ -22,7 +22,7 @@ public class Member {
     private String email;
 
     @Enumerated(EnumType.STRING)
-    private Authority authority;
+    private Authority authority; // ADMIN, USER, SIGN_OUT
 
     private String provider;
     private String providerId;
@@ -30,5 +30,20 @@ public class Member {
     @Builder.Default
     private Boolean isDeleted = Boolean.FALSE;
 
-//    private List<Long> likedIssues;  사용자가 좋아요를 누른 이슈들 (Issue ID 목록)
+    //== 회원 정보 수정 ==//
+    public void updateUserName(String username) {
+
+        this.username = username;
+    }
+
+    public void updateEmail(String email) {
+        this.email = email;
+    }
+
+    //== 회원 가입 시에 USER 권한을 부여 ==//
+    public void addUserAuthority() {
+        this.authority = Authority.USER;
+    }
+
+    //    private List<Long> likedIssues;  사용자가 좋아요를 누른 이슈들 (Issue ID 목록)
 }
